@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#000000">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Ccircle cx='8' cy='8' r='7' fill='%2321e07a'/%3E%3C/svg%3E">
+<title>Memecoin Bot Desk · Papiergeld</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+<script src="lwc.js"></script>
+<style>
+html{color-scheme:dark}
+*{box-sizing:border-box}
+body{margin:0;background:#000;color:#e8e8e8;font-family:Inter,system-ui,sans-serif;font-size:13px}
+.g{color:#21e07a}.r{color:#ff4d5e}.mut{color:#888}
+header{display:flex;align-items:center;gap:14px;padding:10px 16px;border-bottom:1px solid #1a1a1a}
+header h1{font-size:16px;margin:0;font-weight:800}
+.paper{background:#ffb020;color:#000;font-weight:800;padding:3px 8px;border-radius:6px;font-size:11px}
+.sp{flex:1}
+.btn{background:#161616;border:1px solid #2a2a2a;color:#ddd;padding:6px 10px;border-radius:8px;cursor:pointer;font-family:inherit}
+a.btn{text-decoration:none;display:inline-flex;align-items:center}
+.tog{display:flex;align-items:center;gap:6px;cursor:pointer}
+.sw{width:38px;height:20px;border-radius:10px;background:#333;position:relative}
+.sw.on{background:#21e07a}
+.sw::after{content:'';position:absolute;top:2px;left:2px;width:16px;height:16px;border-radius:50%;background:#fff;transition:.2s}
+.sw.on::after{left:20px}
+main{display:grid;grid-template-columns:330px 1fr 440px;gap:12px;padding:12px;height:calc(100vh - 50px)}
+.col{background:#0a0a0a;border:1px solid #1a1a1a;border-radius:14px;padding:14px;overflow:auto;display:flex;flex-direction:column;gap:10px}
+.lbl{font-size:11px;letter-spacing:.12em;color:#777;font-weight:600}
+.termhead{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.termhead .fomo{font-size:12px;padding:4px 8px;flex:none}
+.tok{display:flex;gap:10px;align-items:center}
+.av{width:40px;height:40px;border-radius:50%;background:#222;object-fit:cover;flex:none}
+.big{font-size:28px;font-weight:800}
+.pct{display:flex;gap:6px}
+.pct button{flex:1}
+.pct .sel{border-color:#ff6a3d;color:#ff6a3d}
+.slide{position:relative;height:54px;min-height:54px;flex-shrink:0;border-radius:27px;background:linear-gradient(90deg,#ff3d3d,#ff8a2b);overflow:hidden;user-select:none}
+.slide span{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:15px;color:#fff;pointer-events:none}
+.knob{position:absolute;top:5px;left:5px;width:44px;height:44px;border-radius:50%;background:#fff;cursor:grab;display:flex;align-items:center;justify-content:center;color:#ff5a2b;font-weight:800;touch-action:none}
+.slide.sell{background:linear-gradient(90deg,#7a1fff,#ff3d8a)}
+.list div{display:flex;justify-content:space-between;padding:5px 6px;border-radius:6px;cursor:pointer}
+.list div:hover,.list .act{background:#161616}
+#feed{display:flex;flex-direction:column;gap:8px}
+.msg{display:flex;gap:10px;align-items:flex-start;animation:in .3s}
+@keyframes in{from{opacity:0;transform:translateY(6px)}}
+.ic{width:32px;height:32px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:16px;flex:none}
+.msg b{margin-right:6px}
+.msg .tm{color:#555;font-size:11px;margin-left:6px}
+.card{background:#111;border:1px solid #ff8a2b;border-radius:12px;padding:12px;display:flex;flex-direction:column;gap:8px}
+.card .row{display:flex;gap:8px;flex-wrap:wrap}
+.ok{background:#21e07a;color:#000;border:0;font-weight:800}
+.no{background:#2a1215;color:#ff4d5e;border:0;font-weight:800}
+.stats{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.stats div{background:#111;border-radius:8px;padding:8px}
+.stats b{display:block;font-size:15px}
+.tr{display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid #151515}
+.v{font-weight:800;padding:1px 6px;border-radius:4px;font-size:11px}
+.v.BUY{background:#0f3a22;color:#21e07a}
+.v.WAIT{background:#3a300f;color:#ffb020}
+.v.PASS{background:#3a0f15;color:#ff4d5e}
+</style>
+</head>
+<body>
+<header>
+  <h1>🐸 Memecoin Bot Desk</h1>
+  <span class="paper">PAPIERGELD / SIMULATION</span>
+  <span class="mut">Keine Wallet · kein echtes Geld · keine echten Orders</span>
+  <span class="sp"></span>
+  <span class="mut" id="upd">lade…</span>
+  <label class="tog" id="auto"><span>Auto</span><div class="sw" id="sw"></div></label>
+  <button class="btn" id="reset" type="button">Reset Bank</button>
+</header>
+<main>
+<section class="col">
+  <div class="termhead">
+    <div class="lbl">TERMINAL</div>
+    <a class="btn fomo" id="fomo" target="_blank" rel="noopener noreferrer" href="https://dexscreener.com/solana">In Fomo öffnen</a>
+  </div>
+  <div class="tok"><img class="av" id="tav" alt=""><div><div style="font-weight:800;font-size:16px" id="tname">–</div><div class="mut" id="tmc"></div></div></div>
+  <div class="big" id="tprice">–</div>
+  <div id="mini" style="height:120px"></div>
+  <div class="lbl">DEINE POSITION</div>
+  <div class="big" id="posv" style="font-size:22px">$0.00</div>
+  <div id="pospnl" class="mut">keine Position</div>
+  <div class="pct" id="pcts">
+    <button class="btn" type="button" data-p=".1">10%</button>
+    <button class="btn sel" type="button" data-p=".25">25%</button>
+    <button class="btn" type="button" data-p=".5">50%</button>
+    <button class="btn" type="button" data-p="1">Max</button>
+  </div>
+  <div class="slide" id="sbuy"><span>Slide to buy</span><div class="knob">›</div></div>
+  <div class="slide sell" id="ssell"><span>Slide to sell</span><div class="knob">›</div></div>
+  <div class="lbl">WATCHLIST (Solana, DexScreener)</div>
+  <div class="list" id="list"></div>
+</section>
+<section class="col">
+  <div class="lbl">BOT FEED · Gruppenchat — keiner handelt allein, der Skeptiker entscheidet, du gibst frei</div>
+  <div id="cards"></div>
+  <div id="feed"></div>
+</section>
+<section class="col">
+  <div class="lbl">ANALYSIS · <span id="aname"></span> · 1m</div>
+  <div id="chart" style="height:280px"></div>
+  <div class="stats" id="stats"></div>
+  <div class="lbl" style="margin-top:6px">DESK · TRADES</div>
+  <div class="mut" id="bankst">BANK · started $300.00</div>
+  <div class="big" id="bal" style="font-size:34px">$300.00</div>
+  <div class="mut" id="tsum"></div>
+  <div id="open"></div>
+  <div id="trades"></div>
+</section>
+</main>
+<script src="app.js"></script>
+</body>
+</html>
